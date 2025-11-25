@@ -220,6 +220,8 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
 		projectGitRepoUpdate.GitUsername = payload.GitUsername
 		projectGitRepoUpdate.GitPassword = payload.GitPassword
+		projectGitRepoUpdate.GitUsernameUserAttribute = payload.GitUsernameUserAttribute
+		projectGitRepoUpdate.GitPasswordUserAttribute = payload.GitPasswordUserAttribute
 		payload.GitServiceName = projectGitRepoUpdate.GitServiceName
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
 			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
