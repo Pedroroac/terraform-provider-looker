@@ -3,11 +3,12 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/devoteamgcloud/terraform-provider-looker/pkg/lookergo"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"strings"
 )
 
 func resourceProjectGitRepo() *schema.Resource {
@@ -217,6 +218,7 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 			}
 		}
 		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
+		projectGitRepoUpdate.GitUsername = payload.GitUsername
 		projectGitRepoUpdate.GitPassword = payload.GitPassword
 		payload.GitServiceName = projectGitRepoUpdate.GitServiceName
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
