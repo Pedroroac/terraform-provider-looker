@@ -308,8 +308,9 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 		projectGitRepoUpdate.DeploySecret = value.(string)
 	}
 	if value, ok := d.GetOk("git_username"); ok {
+		projectGitRepoUpdate.GitUsername = value.(string)
 		if value, ok := d.GetOk("git_password"); ok {
-			projectGitRepoUpdate.GitUsername = value.(string)
+			projectGitRepoUpdate.GitPassword = value.(string)
 		} else {
 			return diag.Errorf("git_username requires git_password")
 		}
@@ -321,7 +322,6 @@ func resourceProjectGitRepoUpdate(ctx context.Context, d *schema.ResourceData, m
 				return diag.Errorf("git_password requires git_password_user_attribute")
 			}
 		}
-		projectGitRepoUpdate.GitPassword = value.(string)
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
 			return diag.Errorf("HTTPS Authentication requires URL starts with https://..")
 		}
