@@ -202,45 +202,24 @@ func resourceProjectGitRepoCreate(ctx context.Context, d *schema.ResourceData, m
 		projectGitRepoUpdate.DeploySecret = value.(string)
 	}
 	if value, ok := d.GetOk("git_username"); ok {
-		payload := lookergo.Project{}
-		payload.GitUsername = value.(string)
+		projectGitRepoUpdate.GitUsername = value.(string)
 		if value, ok := d.GetOk("git_password"); ok {
-			payload.GitPassword = value.(string)
+			projectGitRepoUpdate.GitPassword = value.(string)
 		} else {
 			return diag.Errorf("git_username requires git_password")
 		}
 		if value, ok := d.GetOk("git_username_user_attribute"); ok {
-			payload.GitUsernameUserAttribute = value.(string)
+			projectGitRepoUpdate.GitUsernameUserAttribute = value.(string)
 			if value, ok := d.GetOk("git_password_user_attribute"); ok {
-				payload.GitPasswordUserAttribute = value.(string)
+				projectGitRepoUpdate.GitPasswordUserAttribute = value.(string)
 			} else {
 				return diag.Errorf("git_username_user_attribute requires git_password_user_attribute")
 			}
 		}
-		payload.GitRemoteUrl = projectGitRepoUpdate.GitRemoteUrl
-		projectGitRepoUpdate.GitUsername = payload.GitUsername
-		projectGitRepoUpdate.GitPassword = payload.GitPassword
-		projectGitRepoUpdate.GitUsernameUserAttribute = payload.GitUsernameUserAttribute
-		projectGitRepoUpdate.GitPasswordUserAttribute = payload.GitPasswordUserAttribute
-		payload.GitServiceName = projectGitRepoUpdate.GitServiceName
 		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "https://") {
 			return diag.Errorf("HTTPS Authentication requires URL starts with http://..")
 		}
-		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
-		if err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		payload := lookergo.Project{GitRemoteUrl: projectGitRepoUpdate.GitRemoteUrl}
-		if !strings.HasPrefix(projectGitRepoUpdate.GitRemoteUrl, "git@") && !strings.HasPrefix(payload.GitRemoteUrl, "ssh://") {
-			return diag.Errorf("SSH Authentication requires URL starts with git@.. or ssh://..")
-		}
-		_, _, err = dc.Projects.Update(ctx, projectName, &payload)
-		if err != nil {
-			return diag.FromErr(err)
-		}
 	}
-
 	_, _, err = dc.Projects.Update(ctx, projectName, &projectGitRepoUpdate)
 	if err != nil {
 		return diag.FromErr(err)
